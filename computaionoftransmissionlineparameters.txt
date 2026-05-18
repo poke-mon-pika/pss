@@ -1,0 +1,165 @@
+clc;
+
+clear;
+
+
+
+
+% INPUTS
+
+ab = input('value of ab (m): ');
+
+bc = input('value of bc (m): ');
+
+ca = input('value of ca (m): ');
+
+
+
+
+pr = input('receiving end power in MW: ');
+
+vr = input('receiving end voltage in kV: ');
+
+pfr = input('receiving end power factor: ');
+
+
+
+
+l = input('length of the line in km: ');
+
+r = input('resistance per phase per km (ohm): ');
+
+f = input('frequency (Hz): ');
+
+D = input('diameter in m: ');
+
+
+
+
+% CONDUCTOR DATA
+
+rad = D/2;
+
+newrad = 0.7788 * rad;
+
+
+
+
+deq = (ab * bc * ca)^(1/3);
+
+
+
+
+% INDUCTANCE & CAPACITANCE (per meter)
+
+L = 2e-7 * log(deq / newrad);          % H/m
+
+C = (2*pi*8.854e-12) / log(deq / rad); % F/m
+
+
+
+
+% LINE CONSTANTS
+
+XL = 2*pi*f*L*1000*l;   % ohm
+
+rnew = r * l;           % ohm
+
+
+
+
+Z = rnew + 1i*XL;
+
+Y = 1i * (2*pi*f*C*1000*l);
+
+
+
+
+% ABCD CONSTANTS (Nominal Pi)
+
+A = 1 + (Y*Z)/2;
+
+D = A;
+
+B = Z;
+
+C = Y * (1 + (Y*Z)/4);
+
+
+
+
+% RECEIVING END VALUES
+
+vrph = (vr*1e3)/sqrt(3);
+
+Ir_mag = (pr*1e6)/(sqrt(3)*vr*1e3*pfr);
+
+
+
+
+phi = acos(pfr);
+
+Ir = Ir_mag * (cos(phi) - 1i*sin(phi));  % lagging PF
+
+
+
+
+% SENDING END VALUES
+
+Vs = A*vrph + B*Ir;
+
+Is = C*vrph + D*Ir;
+
+
+
+
+% POWER FACTOR AT SENDING END
+
+PFS = cos(angle(Vs) - angle(Is));
+
+
+
+
+% EFFICIENCY
+
+eff = (pr*1e6)/(3*abs(Vs)*abs(Is)*PFS) * 100;
+
+
+
+
+% VOLTAGE REGULATION
+
+reg = ((abs(Vs)/abs(A)) - abs(vrph)) / abs(vrph) * 100;
+
+
+
+
+% OUTPUTS
+
+disp('--- RESULTS ---')
+
+L
+
+C
+
+rnew
+
+A
+
+B
+
+C
+
+abs(Vs)
+
+abs(Is)
+
+angle(Vs)*180/pi
+
+angle(Is)*180/pi
+
+PFS
+
+eff
+
+reg
