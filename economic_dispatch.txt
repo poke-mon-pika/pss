@@ -1,0 +1,24 @@
+alpha = [500; 400; 200];
+beta = [5.3; 5.5; 5.8];
+gamma = [0.004; 0.006; 0.009];
+PD = 800;
+DeIP = 10;
+
+lamda = input('Enter estimated value of Lamda = ');
+fprintf(' ')
+disp('Lamda      P1        P2        P3        DeIP        J        Delamda')
+
+iter = 0;
+while abs(DeIP) >= 0.001
+    iter = iter + 1;
+    P = (lamda - beta) ./ (2 * gamma);
+    DeIP = PD - sum(P);
+    J = sum(ones(length(gamma), 1) ./ (2 * gamma));
+    Delamda = DeIP / J;
+
+    disp([lamda, P(1), P(2), P(3), DeIP, J, Delamda])
+
+    lamda = lamda + Delamda;
+end
+
+totalcost = sum(alpha + beta .* P + gamma .* P.^2)
