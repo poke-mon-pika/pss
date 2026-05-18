@@ -1,0 +1,39 @@
+% Defining the function swing
+function [time, ang] = swing(tc)
+
+k = 0;
+v = 1;
+E = 1.1;
+pm = 0.9;
+T = 0.5;
+delT = 0.05;
+ddelta = 0;
+time(1) = 0;
+ang(1) = 21.64;
+xdf = 1.25;
+xaf = 0.55;
+t = 0;
+delta = 21.64 * pi / 180;
+i = 2;
+m = 2.52 / (180 * 50);
+
+while t < T
+    if t < tc
+        x = xdf;
+    else
+        x = xaf;
+    end
+
+    pmax = (E * v) / x;
+    pa = pm - pmax * sin(delta);
+    ddelta = ddelta + (delT^2 * (pa / m));
+    delta = (delta * 180 / pi + ddelta) * (pi / 180);
+    deltadeg = delta * 180 / pi;
+
+    t = t + delT;
+    time(i) = t;
+    ang(i) = deltadeg;
+    i = i + 1;
+end
+
+end

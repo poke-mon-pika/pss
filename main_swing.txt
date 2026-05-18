@@ -1,0 +1,16 @@
+% solution of Swing equation by point-by-point method
+clc
+clear all
+close all
+
+for i = 1:2
+    tc = input('enter the value of clearing time:\n');
+    [time, ang] = swing(tc);
+    t(:,1) = time';
+    a(:,i) = ang';
+end
+
+plot(t, a(:,1), '*-', t, a(:,2), 'd-')
+axis([0 0.5 0 inf])
+
+t, a
