@@ -1,0 +1,35 @@
+% Transient Stability Analysis - SMIB
+% Find critical clearing angle & critical clearing time
+clc;
+clear;
+% Given data
+f = 60;          % frequency
+y = 3.5;         % inertia constant H
+pm = 0.9;        % mechanical power
+v = 1;           % terminal voltage
+q = 0.436;       % reactive power (calculated from pf = 0.9 lag)
+% Reactance
+x = 0.775;       % total reactance
+% Complex power
+s = complex(pm, q);
+% Current
+i = s / v;
+% Internal voltage
+e = v + i * x;
+% Magnitude of internal voltage
+d = abs(e);
+% Maximum power
+pmax = (d * v) / x;
+% Power angle calculations
+delo = asin(pm / pmax);
+delmax = pi - delo;
+% Critical clearing angle
+val = ((pm/pmax) * (delmax - delo)) + cos(delmax);
+delcc = acos(val) * (180/pi);
+% Critical clearing time
+tc = sqrt((2 * y * ((delcc * pi/180) - delo)) / (pi * f * pm));
+% Display results
+disp('Critical Clearing Angle (degrees):');
+disp(delcc);
+disp('Critical Clearing Time (seconds):');
+disp(tc);
